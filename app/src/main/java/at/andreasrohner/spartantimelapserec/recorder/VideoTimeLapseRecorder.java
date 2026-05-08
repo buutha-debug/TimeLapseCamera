@@ -18,6 +18,7 @@
 
 package at.andreasrohner.spartantimelapserec.recorder;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.content.Context;
@@ -48,15 +49,23 @@ public class VideoTimeLapseRecorder extends VideoRecorder {
 				mSettings.getRecProfile());
 		p.videoFrameWidth = mSettings.getFrameWidth();
 		p.videoFrameHeight = mSettings.getFrameHeight();
-		mMediaRecorder.setProfile(p);
+		mMediaRecorder.setOutputFormat(p.fileFormat);
+		mMediaRecorder.setVideoEncoder(mSettings.getVideoCodec());
+		mMediaRecorder.setVideoSize(p.videoFrameWidth, p.videoFrameHeight);
+		mMediaRecorder.setVideoFrameRate(p.videoFrameRate);
+		int bitrate = p.videoBitRate;
+		if (mSettings.getVideoCodec() == MediaRecorder.VideoEncoder.HEVC && mSettings.getVideoEncodingBitRate() == 0) {
+			bitrate = (int)(bitrate * 0.6);
+		}
+		mMediaRecorder.setVideoEncodingBitRate(bitrate);
 
 		mMediaRecorder.setCaptureRate(1000 / ((double) mSettings.getCaptureRate()));
 
 		if (mRate != -1)
 			mMediaRecorder.setVideoFrameRate(mRate);
-		mMediaRecorder.setOutputFile(getOutputFile("mp4").getAbsolutePath());
-		mMediaRecorder.setVideoSize(mSettings.getFrameWidth(),
-				mSettings.getFrameHeight());
+		File outputFile = getOutputFile("mp4");
+		ImageRecorder.setCurrentRecordedFile(outputFile);
+		mMediaRecorder.setOutputFile(outputFile.getAbsolutePath());
 
 		if (mSettings.getStopRecAfter() > 0) {
 			if (mRate != -1) {
