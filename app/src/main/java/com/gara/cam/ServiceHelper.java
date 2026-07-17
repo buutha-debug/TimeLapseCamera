@@ -33,7 +33,7 @@ public class ServiceHelper {
 		Intent intent = new Intent(context, ForegroundService.class);
 		if (ForegroundService.mIsRunning) {
 			if (calledFromUi) {
-				Toast.makeText(context, context.getString(R.string.error_already_running), Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, "Already running", Toast.LENGTH_SHORT).show();
 			}
 		} else {
 			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

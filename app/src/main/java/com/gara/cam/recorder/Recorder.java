@@ -77,7 +77,7 @@ public abstract class Recorder {
 			return;
 		}
 
-		mInitDelay = settings.getInitDelay();
+		mInitDelay = 1000;
 	}
 
 	protected void releaseCamera() {
