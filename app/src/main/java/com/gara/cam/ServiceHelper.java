@@ -1,4 +1,4 @@
-package at.andreasrohner.spartantimelapserec;
+package com.gara.cam;
 
 import android.content.Context;
 import android.content.Intent;

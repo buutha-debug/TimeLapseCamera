@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.andreasrohner.spartantimelapserec.recorder;
+package com.gara.cam.recorder;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -32,7 +32,7 @@ import android.media.MediaRecorder.OnErrorListener;
 import android.media.MediaRecorder.OnInfoListener;
 import android.os.Handler;
 import android.util.Log;
-import at.andreasrohner.spartantimelapserec.data.RecSettings;
+import com.gara.cam.data.RecSettings;
 
 public class VideoRecorder extends Recorder implements OnInfoListener,
 		OnErrorListener {
@@ -153,7 +153,6 @@ public class VideoRecorder extends Recorder implements OnInfoListener,
 		// no need for more sensor data
 		disableOrientationSensor();
 
-		mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
 		mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
 		CamcorderProfile p = CamcorderProfile.get(mSettings.getCameraId(),

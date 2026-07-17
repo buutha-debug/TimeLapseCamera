@@ -1,8 +1,5 @@
-package at.andreasrohner.spartantimelapserec;
+package com.gara.cam;
 
-import static android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST;
-
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -31,12 +28,12 @@ import androidx.core.app.NotificationCompat.Builder;
 
 import java.io.File;
 
-import at.andreasrohner.spartantimelapserec.data.RecSettings;
-import at.andreasrohner.spartantimelapserec.recorder.Recorder;
+import com.gara.cam.data.RecSettings;
+import com.gara.cam.recorder.Recorder;
 
 public class ForegroundService extends Service implements Handler.Callback {
 
-    public static final String ACTION_STOP_SERVICE = "TimeLapse.action.STOP_SERVICE";
+    public static final String ACTION_STOP_SERVICE = "GaraCam.action.STOP_SERVICE";
     public static boolean mIsRunning = false;
     private RecSettings settings;
     private Recorder recorder;
@@ -67,45 +64,29 @@ public class ForegroundService extends Service implements Handler.Callback {
             settings = new RecSettings();
             settings.load(getApplicationContext(), PreferenceManager.getDefaultSharedPreferences(getApplicationContext()));
 
-            if (settings.isSchedRecEnabled() && settings.getSchedRecTime() > System.currentTimeMillis() + 10000) {
-                AlarmManager alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                Intent newintent = new Intent(getApplicationContext(), ScheduleReceiver.class);
-                PendingIntent alarmIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, newintent, PendingIntent.FLAG_IMMUTABLE);
-                alarmMgr.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, settings.getSchedRecTime(), alarmIntent);
+            PowerManager mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
+            mWakeLock.acquire();
 
-            } else {
+            handlerThread = new HandlerThread("recordingVideo");
+            handlerThread.start();
 
-                PowerManager mPowerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
-                mWakeLock.acquire();
+            Context context = getApplicationContext();
+            Handler handler = new Handler(handlerThread.getLooper(), this);
 
-                handlerThread = new HandlerThread("recordingVideo");
-                handlerThread.start();
+            recorder = Recorder.getInstance(settings, context, handler, mWakeLock);
 
-                Context context = getApplicationContext();
-                Handler handler = new Handler(handlerThread.getLooper(), this);
-
-                recorder = Recorder.getInstance(settings, context,
-                        handler, mWakeLock);
-
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        recorder.start();
-                    }
-                });
-                updateNotif();
-            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    recorder.start();
+                }
+            });
+            updateNotif();
 
             if (listener!=null) listener.onServiceStatusChange(true);
             return START_STICKY;
         } else {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            intent = new Intent(this, ScheduleReceiver.class);
-            PendingIntent alarmIntent;
-            alarmIntent = PendingIntent.getBroadcast(getApplicationContext(),0,intent,PendingIntent.FLAG_IMMUTABLE);
-            alarmManager.cancel(alarmIntent);
-
             stop();
             return START_NOT_STICKY;
         }
@@ -146,7 +127,7 @@ public class ForegroundService extends Service implements Handler.Callback {
     }
 
     private static final int NOTIF_ID = 123;
-    private static final String CHANNEL_ID = "TimeLapseID";
+    private static final String CHANNEL_ID = "GaraCamID";
 
     private void updateNotif(){
 
@@ -158,7 +139,7 @@ public class ForegroundService extends Service implements Handler.Callback {
         Notification notification = new Builder(this, CHANNEL_ID)
                 .setSilent(true)
                 .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT) // For N and below
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pi)
                 .setSmallIcon(R.drawable.ic_camera)
                 .setAutoCancel(false)
@@ -174,18 +155,17 @@ public class ForegroundService extends Service implements Handler.Callback {
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            mNotificationManager.createNotificationChannel(new NotificationChannel(CHANNEL_ID, "TimeLapse", NotificationManager.IMPORTANCE_DEFAULT));
+            mNotificationManager.createNotificationChannel(new NotificationChannel(CHANNEL_ID, "GaraCam", NotificationManager.IMPORTANCE_DEFAULT));
         }
         Intent intent = new Intent(this, MainActivity.class);
         intent.setAction(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent pi = PendingIntent.getActivity(this, NOTIF_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // For N and below
         Notification notification = new Builder(this, CHANNEL_ID)
                 .setSilent(true)
                 .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT) // For N and below
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pi)
                 .setSmallIcon(R.drawable.ic_camera)
                 .setAutoCancel(false)
@@ -220,4 +200,3 @@ public class ForegroundService extends Service implements Handler.Callback {
     }
 
 }
-

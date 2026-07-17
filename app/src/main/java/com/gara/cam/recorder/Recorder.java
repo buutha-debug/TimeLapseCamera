@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.andreasrohner.spartantimelapserec.recorder;
+package com.gara.cam.recorder;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,9 +31,9 @@ import android.os.SystemClock;
 import android.os.PowerManager.WakeLock;
 import android.text.format.DateFormat;
 import android.util.Log;
-import at.andreasrohner.spartantimelapserec.data.RecSettings;
-import at.andreasrohner.spartantimelapserec.sensor.MuteShutter;
-import at.andreasrohner.spartantimelapserec.sensor.OrientationSensor;
+import com.gara.cam.data.RecSettings;
+import com.gara.cam.sensor.MuteShutter;
+import com.gara.cam.sensor.OrientationSensor;
 
 public abstract class Recorder {
 	protected Context mContext;
@@ -50,29 +50,7 @@ public abstract class Recorder {
 	public static Recorder getInstance(RecSettings settings,
 			 Context context, Handler handler,
 			WakeLock wakeLock) {
-		Recorder recorder;
-
-		switch (settings.getRecMode()) {
-		case VIDEO_TIME_LAPSE:
-			recorder = new VideoTimeLapseRecorder(settings,
-					context, handler);
-			break;
-		case IMAGE_TIME_LAPSE:
-			if (settings.shouldUsePowerSaveMode()) {
-				recorder = new PowerSavingImageRecorder(settings,
-						 context, handler, wakeLock);
-			} else {
-				recorder = new ImageRecorder(settings,  context,
-						handler);
-			}
-			break;
-		default:
-			recorder = new VideoRecorder(settings,  context,
-					handler);
-			break;
-		}
-
-		return recorder;
+		return new VideoRecorder(settings, context, handler);
 	}
 
 	public Recorder(RecSettings settings, 			Context context, Handler handler) {

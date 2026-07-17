@@ -1,36 +1,14 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="at.andreasrohner.spartantimelapserec.MainActivity" >
-
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_start"
-        android:onClick="actionStart"
         android:icon="@drawable/ic_radio_button_checked_24px"
-        app:showAsAction="always"
-        android:title="@string/action_start"/>
+        android:title="@string/action_start"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_stop"
-        android:onClick="actionStop"
         android:icon="@drawable/ic_stop_circle_24px"
-        app:showAsAction="always"
-        android:title="@string/action_stop"/>
-    <item
-        android:id="@+id/action_gallery"
-        android:onClick="actionGallery"
-        android:title="@string/action_gallery"/>
-    <item
-        android:id="@+id/action_preview"
-        android:onClick="actionPreview"
-        android:icon="@drawable/ic_visibility_24px"
-        app:showAsAction="always"
-        android:title="@string/action_preview"/>
-    <item
-        android:id="@+id/action_unmute_all_streams"
-        android:onClick="actionUnmuteAllStreams"
-        android:title="@string/action_unmute_all_streams"/>
-    <item
-        android:id="@+id/action_about"
-        android:onClick="actionAbout"
-        android:title="@string/action_about"/>
+        android:title="@string/action_stop"
+        app:showAsAction="ifRoom" />
 </menu>

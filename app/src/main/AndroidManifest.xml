@@ -4,25 +4,14 @@
         android:name="android.hardware.camera"
         android:required="true" />
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"/>
-    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
 
     <application
         android:allowBackup="true"
@@ -30,9 +19,9 @@
         android:label="@string/app_name"
         android:launchMode="singleTask"
         android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-        android:theme="@style/Theme.TimeLapse" >
+        android:theme="@style/Theme.GaraCam" >
         <activity
-            android:name="at.andreasrohner.spartantimelapserec.MainActivity"
+            android:name="com.gara.cam.MainActivity"
             android:windowSoftInputMode="stateUnchanged"
             android:exported="true">
             <intent-filter>
@@ -40,24 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="at.andreasrohner.spartantimelapserec.PreviewActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateAlwaysHidden" >
-        </activity>
 
         <service
             android:exported="false"
             android:foregroundServiceType="camera"
-            android:name="at.andreasrohner.spartantimelapserec.ForegroundService" />
-
-        <service
-            android:exported="false"
-            android:foregroundServiceType="specialUse"
-            android:name="at.andreasrohner.spartantimelapserec.rest.RestService" />
-
-        <receiver android:name="at.andreasrohner.spartantimelapserec.ScheduleReceiver" />
-        <receiver android:name="at.andreasrohner.spartantimelapserec.PowerSavingReceiver" />
+            android:name="com.gara.cam.ForegroundService" />
     </application>
 
 </manifest>

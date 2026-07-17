@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.andreasrohner.spartantimelapserec.sensor;
+package com.gara.cam.sensor;
 
 import android.app.NotificationManager;
 import android.content.Context;

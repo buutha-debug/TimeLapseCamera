@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package at.andreasrohner.spartantimelapserec;
+package com.gara.cam;
 
 import android.content.Context;
 import android.os.Bundle;
